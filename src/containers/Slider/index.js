@@ -8,47 +8,33 @@ const Slider = () => {
   const { data } = useData();
   const [index, setIndex] = useState(0);
   const byDateDesc = data?.focus.sort((evtA, evtB) =>
-    new Date(evtA.date) < new Date(evtB.date) ? -1 : 1
+    new Date(evtA.date) > new Date(evtB.date) ? -1 : 1
   );
-  
-  // Trie le tableau focus contenu dans l'objet data par date dans l'ordre décroissant. Du plus ancien au plus récent.
-  // Méthode sort avec une fonction de comparaison basée sur les dates
-  // -1 indique que si l'evenetment A est plus ancien que B, il doit etre placé avant le B (evenement le plus récent)
-
   const nextCard = () => {
-    setIndex((prevIndex) =>
-      prevIndex < byDateDesc.length - 1 ? prevIndex + 1 : 0
+    setTimeout(
+      /* Ajout de +1 pour passer au slide suivant */
+      /* Ajout de ? a byDateDesc pour supprimer l'erreur "is undefined", 
+      l'opérateur ?. permet d'accéder aux propriétés d'un objet qui peut
+       être null ou undefined sans provoquer d'erreur */
+      () => setIndex(index + 1 < byDateDesc?.length ? index + 1 : 0),
+      5000
     );
-
-    // NextCard : utilise la fonction setIndex pour mettre à jour l'index.
-    // L'index est incrémenté de 1 s'il est inférieur à la longueur du tableau trié,
-    // sinon il est réinitialisé à 0.
   };
-
-  useEffect(
-    () => {
-      const intervalId = setInterval(nextCard, 5000);
-
-      return () => clearInterval(intervalId);
-    },
-    // eslint-disable-next-line
-    [index, byDateDesc]
-    // useEffect : exécute la fonction nextCard toutes les 5 secondes
-    // clearInterval : arrête l'exécution de la fonction nextCard
-    // La dépendance [index, byDateDesc] indique que l'effet doit être réexécuté lorsque l'une de ces valeurs change.
-  );
-  
+  useEffect(() => {
+    nextCard();
+  });
   return (
     <div className="SlideCardList">
       {byDateDesc?.map((event, idx) => (
-        <>
-          <div
-            key={event.title}
-            className={`SlideCard SlideCard--${
+        /* Remplacement des fragment par une div pour englober l'élement 
+         et remplecement de la key pour qu'elle sois unique a chaque slide */
+          <div key={event.date}>
+            <div className={`SlideCard SlideCard--${
               index === idx ? "display" : "hide"
             }`}
           >
-            <img src={event.cover} alt="forum" />
+            {/* Changement de alt pour l'image */}
+            <img src={event.cover} alt={event.title} />
             <div className="SlideCard__descriptionContainer">
               <div className="SlideCard__description">
                 <h3>{event.title}</h3>
@@ -61,15 +47,19 @@ const Slider = () => {
             <div className="SlideCard__pagination">
               {byDateDesc.map((_, radioIdx) => (
                 <input
-                  key={`${event.id}`}
+                  /* changement de la key pour qu'elle corresponde a la slide en cours */
+                  key={_.date}
                   type="radio"
                   name="radio-button"
-                  checked={idx === radioIdx}
+                  /* idx > index pour que les bouton radio fonctionnent correctement */
+                  checked={index === radioIdx}
+                  /* Ajout de readOnly pour supprimer l'erreur */
+                  readOnly
                 />
               ))}
             </div>
           </div>
-        </>
+        </div>
       ))}
     </div>
   );

@@ -12,10 +12,8 @@ const Slider = () => {
   );
   const nextCard = () => {
     setTimeout(
-      /* Ajout de +1 pour passer au slide suivant */
-      /* Ajout de ? a byDateDesc pour supprimer l'erreur "is undefined", 
-      l'opérateur ?. permet d'accéder aux propriétés d'un objet qui peut
-       être null ou undefined sans provoquer d'erreur */
+      /* Ajout de +1 pour passer au slide suivant (et que le slider sois reset au début) */
+      /* Ajout de ? a byDateDesc pour supprimer l'erreur "is undefined" */
       () => setIndex(index + 1 < byDateDesc?.length ? index + 1 : 0),
       5000
     );
@@ -26,7 +24,7 @@ const Slider = () => {
   return (
     <div className="SlideCardList">
       {byDateDesc?.map((event, idx) => (
-        /* Remplacement des fragment par une div pour englober l'élement 
+        /* Remplacement du fragment par une div pour englober l'élement 
          et remplecement de la key pour qu'elle sois unique a chaque slide */
           <div key={event.date}>
             <div className={`SlideCard SlideCard--${

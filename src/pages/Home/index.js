@@ -18,8 +18,10 @@ const Page = () => {
   // const qui vient chercher la dernière prestation
   const last =
     data && data.events && data.events.length > 0
-      ? data.events[data.events.length - 1]
-      : null;
+      ? 
+        data.events[data.events.length - 1] 
+      : 
+        null;
 
   return <>
     <header>
